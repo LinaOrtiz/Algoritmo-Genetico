@@ -1,0 +1,117 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 21 11:12:34 2020
+
+@author: 15-db0011
+"""
+
+import numpy as  np
+
+def Pob_ini(tpob,c):
+    Pob=np.zeros((tpob,c))
+    for i in range(tpob):
+        for j in range(c):
+            tmp=np.random.permutation(c)+1
+            #print(tmp)
+            Pob[i,:]=tmp
+            #print(Pob) 
+    return Pob
+        
+def decod2(b,c,tpob):
+    matriz=np.zeros((tpob,(c*2)+1))
+    matriz=matriz.astype(int)
+    tmp=0
+    q=25
+    #Nodo y Primer cliente
+    for i in range(tpob):
+            matriz[i,1]=a[i,0]
+    #Del segundo cliente en adelante
+    for i in range(tpob):
+            tmp=Dmd1[a[i,0]-1]
+            pos=1
+            j=1
+            while j<c:
+                tmp=tmp+Dmd1[a[i,j]-1]
+                if tmp<=q:
+                    matriz[i,pos+1]=a[i,j]
+                    pos=pos+1
+                    j=j+1
+                else:
+                    matriz[i,pos+1]=0
+                    pos=pos+1
+                    tmp=0
+    return matriz
+
+def costo(a,c,tpob,Dmd1):
+    arco=np.array([[0,1,2,1,1,2],[1,0,1,1,2,2],
+                   [1,1,0,1,2,1],[1,2,2,0,1,1]
+                   ,[2,1,1,2,0,2],[1,2,1,1,2,0]])
+    print(' ')
+    print('Matriz de costos')
+    print(arco)
+    valor=np.zeros((fila,1))
+    for i in range(fila):
+        cont=0
+        for j in range(columna):
+            cont= cont+arco[b[i,j],b[i,j-1]]
+            valor[i,0]=cont
+    return valor
+
+def seleccion(b,d):
+    padres=np.zeros((tpob,c))
+    for i in range(tpob):
+        a1=np.random.randint(0,tpob)
+        a2=np.random.randint(0,tpob)
+       
+        while a1==a2:
+            a1=np.random.randint(0,tpob)
+            a2=np.random.randint(0,tpob)
+        print(' ')    
+        print(a1,a2)
+
+        if d[a1]<=d[a2]:
+            padres[i,:]=a[a1,:]
+        else:
+            padres[i,:]=a[a2,:]
+    return padres
+def cruce(e,tpob,c):
+    cc=np.zeros((fil,col))
+    for i in range(fil):
+        for j in range(fil+1):
+              if e[i] ==e[i+1]:
+                  cc[i,j]=e[i,j]
+                  print(cc)
+
+   
+print("Inicia programa Principal")
+#tpob=int(input("Digite la cantidad de soluciones: "))
+#y=int(input("Ingrese el numero de clientes: "))
+tpob=4
+c=5
+q=25
+Dmd=np.random.randint(1,5,size=(1,tpob))
+Dmd1=[5,7,10,9,11]
+
+a= Pob_ini(tpob, c)    
+a=a.astype(int)
+print('Matriz de Clientes')
+print(a)
+print(' ')
+
+b=decod2(a,c,tpob)
+b=b.astype(int)
+fila,columna=b.shape
+print('-----RUTAS-----')
+print(b)
+d=costo(a,c,tpob,Dmd1)
+d=d.astype(int)
+print(' ')
+print('Costos')
+print(d)
+e=seleccion(b,d)
+e=e.astype(int)
+print(' ')
+print('Padres')
+print(e)
+fil,col=e.shape
+f=cruce(e,tpob,c)
